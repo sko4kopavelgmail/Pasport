@@ -25,31 +25,30 @@ public class MainController {
 
     @GetMapping("/passportBrowse")
     public String loadBrowsePage(Model model) {
-        model.addAttribute("passports",passportService.getAll());
+        model.addAttribute("passports", passportService.getAll());
+        model.addAttribute("collectionSize", passportService.getAll().size());
         return "browse";
     }
 
     @GetMapping("/passportEdit/{passport}")
-    public String loadEditPage(
-            @PathVariable Passport passport
-
-    ) {
+    public String loadEditPage(@PathVariable Passport passport, Model model) {
+        model.addAttribute("passport", passport);
         return "edit";
     }
 
-    @PostMapping("/passportEdit")
-    public String getEditPage(){
-
+    @PostMapping("/passportEdit/{passport}")
+    public String getEditPage(@RequestParam Map<String, String> form, @PathVariable Passport passport) {
+        passportService.updatePassport(passport, form);
         return "redirect:/passportBrowse";
     }
 
     @GetMapping("/createPassport")
-    public String loadCreatePage(){
+    public String loadCreatePage() {
         return "create";
     }
 
     @PostMapping("/createPassport")
-    public String getCreatePage(@RequestParam Map<String,String> form){
+    public String getCreatePage(@RequestParam Map<String, String> form) {
         passportService.createPassport(form);
         return "redirect:/passportBrowse";
     }

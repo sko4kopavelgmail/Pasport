@@ -14,16 +14,26 @@ public class PassportService {
     @Autowired
     private PassportRepo passportRepo;
 
-    public List<Passport> getAll(){
+    public List<Passport> getAll() {
         return passportRepo.findAll();
     }
 
-    public void createPassport(Map<String, String> form){
+    public void updatePassport(Passport passport, Map<String, String> form) {
+        setFields(passport, form);
+        passportRepo.save(passport);
+    }
+
+    public void createPassport(Map<String, String> form) {
         Passport passport = new Passport();
+        setFields(passport, form);
+        passportRepo.save(passport);
+    }
+
+    private void setFields(Passport passport, Map<String, String> form) {
         int okp;
         try {
             okp = Integer.parseInt(form.get("OKP"));
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             okp = 0;
         }
         passport.setFullName(form.get("fullName"));
@@ -39,7 +49,5 @@ public class PassportService {
         passport.setOKP(okp);
         passport.setSAPRIntegration(form.get("SAPRIntegration").equals("Да"));
         passport.setCriticalPosition(form.get("criticalPosition").equals("Да"));
-
-        passportRepo.save(passport);
     }
 }
